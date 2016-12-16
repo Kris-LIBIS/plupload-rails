@@ -29,6 +29,9 @@ Add to your application.js:
 
     // optional, only if you want to use the jquery integration
     //= require jquery.plupload.queue
+    
+    // optional, only if you want to use mOxie namespace
+    //= require o
 
 
 Add to your application stylesheet:
