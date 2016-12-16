@@ -31,7 +31,7 @@ Add to your application.js:
     //= require jquery.plupload.queue
     
     // optional, only if you want to use mOxie namespace
-    //= require o
+    //= require plupload.o
 
 
 Add to your application stylesheet:
