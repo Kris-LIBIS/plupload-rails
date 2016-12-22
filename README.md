@@ -18,12 +18,19 @@ Quick Start
 
 Add to your application.js:
 
+    // Start Development
     //= require moxie
     //= require plupload.dev
+    // End Development
+    
+    // Start Production
+    //= require plupload.full.min
+    // End Production
 
+    // Start Optional
     // optional, only needed if you'd like to use plupload localized
     //= require plupload/i18n/de
-
+    
     // optional, but recommended. it sets generic settings like flash url, etc.
     //= require plupload.settings
 
@@ -32,6 +39,7 @@ Add to your application.js:
     
     // optional, only if you want to use mOxie namespace
     //= require plupload.o
+    // End Optional
 
 
 Add to your application stylesheet:
