@@ -458,15 +458,15 @@ $.widget("ui.plupload", {
 
 			switch (err.code) {
 				case plupload.FILE_EXTENSION_ERROR:
-					details = plupload.sprintf(_("File: %s"), err.file.name);
+					details = plupload.sprintf(_("File: %s"), err.file.relativePath);
 					break;
 
 				case plupload.FILE_SIZE_ERROR:
-					details = plupload.sprintf(_("File: %s, size: %d, max file size: %d"), err.file.name,  plupload.formatSize(err.file.size), plupload.formatSize(plupload.parseSize(up.getOption('filters').max_file_size)));
+					details = plupload.sprintf(_("File: %s, size: %d, max file size: %d"), err.file.relativePath,  plupload.formatSize(err.file.size), plupload.formatSize(plupload.parseSize(up.getOption('filters').max_file_size)));
 					break;
 
 				case plupload.FILE_DUPLICATE_ERROR:
-					details = plupload.sprintf(_("%s already present in the queue."), err.file.name);
+					details = plupload.sprintf(_("%s already present in the queue."), err.file.relativePath);
 					break;
 
 				case self.FILE_COUNT_ERROR:
@@ -902,6 +902,9 @@ $.widget("ui.plupload", {
 			$('.ui-button-text', this.browse_button).html(plupload.sprintf(_('%d files queued'), up.total.queued));
 		}
 
+		// have a helper class on a container expressing whether it has files queued or not
+		this.container.toggleClass('plupload_files_queued', up.files.length);
+
 		up.refresh();
 	},
 
@@ -1135,7 +1138,7 @@ $.widget("ui.plupload", {
 				'<span class="plupload_file_percent">{percent} </span>' +
 			'</div>' +
 			'<div class="plupload_file_name" title="{name}">' +
-				'<span class="plupload_file_name_wrapper">{name} </span>' +
+				'<span class="plupload_file_name_wrapper">{relativePath} </span>' +
 			'</div>' +
 			'<div class="plupload_file_action">' +
 				'<div class="plupload_action_icon ui-icon ui-icon-circle-minus"> </div>' +
@@ -1187,7 +1190,7 @@ $.widget("ui.plupload", {
 			if (file.target_name) {
 				fields += '<input type="hidden" name="' + id + '_tmpname" value="'+plupload.xmlEncode(file.target_name)+'" />';
 			}
-			fields += '<input type="hidden" name="' + id + '_name" value="'+plupload.xmlEncode(file.name)+'" />';
+			fields += '<input type="hidden" name="' + id + '_name" value="'+plupload.xmlEncode(file.relativePath)+'" />';
 			fields += '<input type="hidden" name="' + id + '_status" value="' + (file.status === plupload.DONE ? 'done' : 'failed') + '" />';
 
 			$('#' + file.id).find('.plupload_file_fields').html(fields);
@@ -1290,7 +1293,7 @@ $.widget("ui.plupload", {
 
 			// Get file name and split out name and extension
 			file = self.uploader.getFile(fileContainer[0].id);
-			name = file.name;
+			name = file.relativePath;
 			parts = /^(.+)(\.[^.]+)$/.exec(name);
 			if (parts) {
 				name = parts[1];
@@ -1309,8 +1312,8 @@ $.widget("ui.plupload", {
 
 					// Rename file and glue extension back on
 					if (e.keyCode === 13) {
-						file.name = nameInput.val() + ext;
-						nameSpan.html(file.name);
+						file.relativePath = nameInput.val() + ext;
+						nameSpan.html(file.relativePath);
 					}
 					nameInput.blur();
 				}

@@ -213,7 +213,7 @@ used as it is.
 								inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_tmpname" value="' + plupload.xmlEncode(file.target_name) + '" />';
 							}
 
-							inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_name" value="' + plupload.xmlEncode(file.name) + '" />';
+							inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_name" value="' + plupload.xmlEncode(file.relativePath) + '" />';
 							inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_status" value="' + (file.status == plupload.DONE ? 'done' : 'failed') + '" />';
 
 							inputCount++;
@@ -223,7 +223,7 @@ used as it is.
 
 						fileList.append(
 							'<li id="' + file.id + '">' +
-								'<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
+								'<div class="plupload_file_name"><span>' + file.relativePath + '</span></div>' +
 								'<div class="plupload_file_action"><a href="#"></a></div>' +
 								'<div class="plupload_file_status">' + file.percent + '%</div>' +
 								'<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' +
@@ -277,7 +277,7 @@ used as it is.
 				uploader.bind('Init', function(up, res) {
 					// Enable rename support
 					if (!settings.unique_names && settings.rename) {
-						target.on('click', '#' + id + '_filelist div.plupload_file_name span', function(e) {
+						target.on('dblclick', '#' + id + '_filelist div.plupload_file_name span', function(e) {
 							var targetSpan = $(e.target), file, parts, name, ext = "";
 							var fileContainer = targetSpan.closest('li');
 
@@ -287,7 +287,7 @@ used as it is.
 
 							// Get file name and split out name and extension
 							file = up.getFile(targetSpan.parents('li')[0].id);
-							name = file.name;
+							name = file.relativePath;
 							parts = /^(.+)(\.[^.]+)$/.exec(name);
 							if (parts) {
 								name = parts[1];
@@ -295,9 +295,12 @@ used as it is.
 							}
 
 							// Display input element
-							targetSpan.hide().after('<input type="text" />');
-							targetSpan.next().val(name).focus().blur(function() {
+							// targetSpan.hide().after('<input type="text"/>');
+							// targetSpan.next().val(name).focus().blur(function() {
+							nameInput = $('<input class="plupload_file_rename" type="text" />').width(targetSpan.width()).insertAfter(targetSpan.hide());
+							nameInput.val(name).focus().blur(function() {
 								targetSpan.show().next().remove();
+								// targetSpan.show().parent().scrollLeft(0).end().next().remove();
 							}).keydown(function(e) {
 								var targetInput = $(this);
 
@@ -305,8 +308,9 @@ used as it is.
 									e.preventDefault();
 
 									// Rename file and glue extension back on
-									file.name = targetInput.val() + ext;
-									targetSpan.html(file.name);
+									file.relativePath = targetInput.val() + ext;
+									file.name = file.relativePath.replace(/^.*[\\\/]/, '');
+									targetSpan.html(file.relativePath);
 									targetInput.blur();
 								}
 							});

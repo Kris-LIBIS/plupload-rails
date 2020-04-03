@@ -10,7 +10,7 @@ Install
 Just add it got your Gemfile:
 
 ```ruby
-gem 'plupload-rails'
+gem 'plupload-rails', git: 'git@github.com:Kris-LIBIS/plupload-rails.git'
 ```
 
 Quick Start
@@ -21,19 +21,31 @@ Add to your application.js:
     //= require moxie
     //= require plupload.dev
 
+    // optional, but required if you want have checksums (default on for chunks).
+    //= require spark-md5
+
+    // Or replace all above with:
+    //= require plupload.full
+
     // optional, only needed if you'd like to use plupload localized
     //= require plupload/i18n/de
 
     // optional, but recommended. it sets generic settings like flash url, etc.
     //= require plupload.settings
 
-    // optional, only if you want to use the jquery integration
+    // optional, only if you want to use the widget
     //= require jquery.plupload.queue
+
+    // optional, only if you want to use the jquery UI widget
+    //= require jquery.ui.plupload
 
 
 Add to your application stylesheet:
 
     //= require jquery.plupload.queue
+    //    or
+    //= require jquery.ui.plupload
+
 
 For Rails 4, add to config/initializors/assets.rb:
     
